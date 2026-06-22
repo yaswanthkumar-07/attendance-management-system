@@ -1,12 +1,12 @@
-const Faculty = require("../models/Faculty");
+const Subject = require("../models/Subject");
 
-const createFaculty = async (req, res) => {
+const createSubject = async (req, res) => {
   try {
-    const faculty = await Faculty.create(req.body);
+    const subject = await Subject.create(req.body);
 
     res.status(201).json({
       success: true,
-      faculty
+      subject
     });
   } catch (error) {
     res.status(500).json({
@@ -16,14 +16,14 @@ const createFaculty = async (req, res) => {
   }
 };
 
-const getFaculties = async (req, res) => {
+const getSubjects = async (req, res) => {
   try {
-    const faculties = await Faculty.find();
+    const subjects = await Subject.find().populate("faculty");
 
     res.json({
       success: true,
-      count: faculties.length,
-      faculties
+      count: subjects.length,
+      subjects
     });
   } catch (error) {
     res.status(500).json({
@@ -34,6 +34,6 @@ const getFaculties = async (req, res) => {
 };
 
 module.exports = {
-  createFaculty,
-  getFaculties
+  createSubject,
+  getSubjects
 };

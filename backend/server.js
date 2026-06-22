@@ -6,9 +6,12 @@ const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/AuthRoutes");
 const studentRoutes = require("./routes/StudentRoutes");
+const facultyRoutes = require("./routes/FacultyRoutes");
+const subjectRoutes = require("./routes/SubjectRoutes");
 
 const protect = require("./middleware/AuthMiddleware");
 const authorize = require("./middleware/RoleMiddleware");
+
 
 dotenv.config();
 
@@ -23,6 +26,8 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/faculties", facultyRoutes);
+app.use("/api/subjects", subjectRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
