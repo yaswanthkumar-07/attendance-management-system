@@ -8,6 +8,8 @@ const authRoutes = require("./routes/AuthRoutes");
 const studentRoutes = require("./routes/StudentRoutes");
 const facultyRoutes = require("./routes/FacultyRoutes");
 const subjectRoutes = require("./routes/SubjectRoutes");
+const attendanceRoutes = require("./routes/AttendanceRoutes");
+const reportRoutes = require("./routes/ReportRoutes");
 
 const protect = require("./middleware/AuthMiddleware");
 const authorize = require("./middleware/RoleMiddleware");
@@ -28,6 +30,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/faculties", facultyRoutes);
 app.use("/api/subjects", subjectRoutes);
+app.use("/api/sessions", attendanceRoutes);
+app.use("/api/attendance", reportRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
