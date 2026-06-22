@@ -1,13 +1,28 @@
 const AttendanceSession = require("../models/AttendanceSession");
+const QRCode = require("qrcode");
 
 const createSession = async (req, res) => {
   try {
-    const session = await AttendanceSession.create(req.body);
+    const { subject, faculty, sessionCode } = req.body;
+
+    const qrData = JSON.stringify({
+      sessionCode
+    });
+
+    const qrCode = await QRCode.toDataURL(qrData);
+
+    const session = await AttendanceSession.create({
+      subject,
+      faculty,
+      sessionCode,
+      qrCode
+    });
 
     res.status(201).json({
       success: true,
       session
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -28,6 +43,7 @@ const getSessions = async (req, res) => {
       count: sessions.length,
       sessions
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
