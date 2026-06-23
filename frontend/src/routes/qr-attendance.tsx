@@ -12,19 +12,14 @@ export const Route = createFileRoute("/qr-attendance")({
 function QRPage() {
   const [sessions, setSessions] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
+  const [attendance, setAttendance] = useState<any[]>([]);
   const [secs, setSecs] = useState(30);
-  const [token, setToken] = useState(
-    () => Math.random().toString(36).slice(2, 10).toUpperCase()
-  );
 
   useEffect(() => {
     const t = setInterval(() => {
       setSecs((s) => {
         if (s <= 1) {
-          setToken(
-            Math.random().toString(36).slice(2, 10).toUpperCase()
-          );
-          return 30;
+  return 30;
         }
         return s - 1;
       });
@@ -36,13 +31,15 @@ function QRPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [sessionsRes, studentsRes] = await Promise.all([
-          api.get("/sessions"),
-          api.get("/students"),
-        ]);
-
+        const [sessionsRes, studentsRes, attendanceRes] =
+  await Promise.all([
+    api.get("/sessions"),
+    api.get("/students"),
+    api.get("/attendance"),
+  ]);
         setSessions(sessionsRes.data.sessions || []);
         setStudents(studentsRes.data.students || []);
+        setAttendance(attendanceRes.data.records || []);
       } catch (err) {
         console.error(err);
       }
@@ -56,7 +53,14 @@ function QRPage() {
     sessions[0] ||
     {};
 
-  const recent = students.slice(0, 6);
+  const scannedCount = attendance.filter(
+  (a) => a.session?._id === active?._id
+).length;
+
+const recent = attendance
+  .filter((a) => a.student)
+  .slice(-6)
+  .reverse();
 
   return (
     <AppShell
@@ -83,7 +87,11 @@ function QRPage() {
           </div>
 
           <div className="mx-auto w-64 h-64 rounded-2xl bg-white p-4 grid place-items-center">
-            <FakeQR token={token} />
+            <img
+  src={active?.qrCode}
+  alt="QR Code"
+  className="w-full h-full object-contain"
+/>
           </div>
 
           <div className="mt-5 flex items-center justify-center gap-3 text-sm">
@@ -95,21 +103,14 @@ function QRPage() {
 
             <button
               onClick={() => {
-                setSecs(30);
-                setToken(
-                  Math.random()
-                    .toString(36)
-                    .slice(2, 10)
-                    .toUpperCase()
-                );
-              }}
+  setSecs(30);
+}}
             >
               <RefreshCcw className="h-3 w-3" />
             </button>
           </div>
-
           <div className="mt-3 text-xs font-mono">
-            Token: {token}
+            Session Code: {active?.sessionCode || "N/A"}
           </div>
         </div>
 
@@ -119,7 +120,9 @@ function QRPage() {
               <div className="text-xs text-muted-foreground">
                 Scanned
               </div>
-              <div className="text-2xl font-semibold">0</div>
+              <div className="text-2xl font-semibold">
+  {scannedCount}
+</div>
             </div>
 
             <div className="glass-panel rounded-2xl p-4">
@@ -141,23 +144,23 @@ function QRPage() {
             </div>
 
             <div className="space-y-2">
-              {recent.map((s, i) => (
+              {recent.map((a, i) => (
                 <div
-                  key={s._id}
+                  key={a._id}
                   className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3"
                 >
                   <img
                     src={`https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(
-                      s.name
+                      a.student.name
                     )}`}
                     className="h-8 w-8 rounded-full"
                     alt=""
                   />
 
                   <div>
-                    <div>{s.name}</div>
+                    <div>{a.student.name}</div>
                     <div className="text-xs">
-                      {s.rollNumber}
+                      {a.student.rollNumber}
                     </div>
                   </div>
 
@@ -174,45 +177,5 @@ function QRPage() {
   );
 }
 
-function FakeQR({ token }: { token: string }) {
-  // Deterministic pseudo-QR pattern
-  const size = 21;
-  const cells: boolean[] = [];
-  let h = 0;
-  for (let i = 0; i < token.length; i++) h = (h * 31 + token.charCodeAt(i)) >>> 0;
-  for (let i = 0; i < size * size; i++) {
-    h = (h * 1103515245 + 12345) >>> 0;
-    cells.push((h & 1) === 1);
-  }
-  // Corner finders
-  const isFinder = (r: number, c: number) => {
-    const inBox = (br: number, bc: number) =>
-      r >= br && r < br + 7 && c >= bc && c < bc + 7;
-    return inBox(0, 0) || inBox(0, size - 7) || inBox(size - 7, 0);
-  };
-  const finderFill = (r: number, c: number) => {
-    const local = (br: number, bc: number) => {
-      const rr = r - br, cc = c - bc;
-      if (rr === 0 || rr === 6 || cc === 0 || cc === 6) return true;
-      if (rr >= 2 && rr <= 4 && cc >= 2 && cc <= 4) return true;
-      return false;
-    };
-    if (r < 7 && c < 7) return local(0, 0);
-    if (r < 7 && c >= size - 7) return local(0, size - 7);
-    if (r >= size - 7 && c < 7) return local(size - 7, 0);
-    return false;
-  };
-  return (
-    <div
-      className="grid"
-      style={{ gridTemplateColumns: `repeat(${size}, 1fr)`, width: "100%", height: "100%", gap: 1 }}
-    >
-      {Array.from({ length: size * size }, (_, i) => {
-        const r = Math.floor(i / size), c = i % size;
-        const on = isFinder(r, c) ? finderFill(r, c) : cells[i];
-        return <div key={i} style={{ background: on ? "#0b0a13" : "transparent" }} />;
-      })}
-    </div>
-  );
-}
+ 
 
