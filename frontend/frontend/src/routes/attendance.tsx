@@ -11,6 +11,7 @@ export const Route = createFileRoute("/attendance")({
 
 function AttendancePage() {
   const [attendance, setAttendance] = useState<any[]>([]);
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     const fetchAttendance = async () => {
@@ -18,34 +19,40 @@ function AttendancePage() {
         const res = await api.get("/attendance");
 
         const formattedAttendance = res.data.records
-  .filter((r: any) => r.student && r.session)
-  .map((r: any) => ({
-    id: r._id,
-    student: r.student.name,
-    rollNo: r.student.rollNumber,
-    subject: r.session.subject.subjectName,
-    date: new Date(r.timestamp).toLocaleDateString(),
-    mode: r.attendanceMethod.toUpperCase(),
-    status: "Present",
-  }));
+          .filter((r: any) => r.student && r.session)
+          .map((r: any) => ({
+            id: r._id,
+            student: r.student.name,
+            rollNo: r.student.rollNumber,
+            subject: r.session.subject.subjectName,
+            date: new Date(r.timestamp).toLocaleDateString(),
+            mode: r.attendanceMethod.toUpperCase(),
+            status: "Present",
+          }));
 
-        setAttendance(formattedAttendance);
+        setAttendance(
+          role === "student"
+            ? formattedAttendance.slice(0, 5)
+            : formattedAttendance
+        );
       } catch (err) {
         console.error(err);
       }
     };
 
     fetchAttendance();
-  }, []);
+  }, [role]);
 
   return (
     <AppShell
       title="Attendance"
       subtitle="All attendance records captured across modes."
       actions={
-        <button className="h-9 px-3 rounded-lg border border-border text-sm inline-flex items-center gap-1.5 hover:bg-accent/40">
-          <Download className="h-4 w-4" /> Export CSV
-        </button>
+        role === "admin" ? (
+          <button className="h-9 px-3 rounded-lg border border-border text-sm inline-flex items-center gap-1.5 hover:bg-accent/40">
+            <Download className="h-4 w-4" /> Export CSV
+          </button>
+        ) : null
       }
     >
       <TableShell>

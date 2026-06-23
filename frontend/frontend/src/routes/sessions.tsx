@@ -11,47 +11,45 @@ export const Route = createFileRoute("/sessions")({
 
 function SessionsPage() {
   const [sessions, setSessions] = useState<any[]>([]);
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
-  const fetchSessions = async () => {
-    try {
-      const res = await api.get("/sessions");
+    const fetchSessions = async () => {
+      try {
+        const res = await api.get("/sessions");
 
-      console.log("SESSIONS RESPONSE:", res.data);
-      console.log("SESSIONS ARRAY:", res.data.sessions);
+        const formattedSessions = res.data.sessions.map((s: any) => ({
+          id: s._id,
+          subject: s.subject?.subjectName || "Subject",
+          faculty: s.faculty?.name || "Faculty",
+          date: new Date(s.startTime).toLocaleDateString(),
+          time: new Date(s.startTime).toLocaleTimeString(),
+          mode: "QR",
+          status: s.status === "active" ? "Active" : "Completed",
+          present: 0,
+          total: 10,
+          sessionCode: s.sessionCode,
+        }));
 
-      const formattedSessions = res.data.sessions.map((s: any) => ({
-        id: s._id,
-        subject: s.subject?.subjectName || "Subject",
-        faculty: s.faculty?.name || "Faculty",
-        date: new Date(s.startTime).toLocaleDateString(),
-        time: new Date(s.startTime).toLocaleTimeString(),
-        mode: "QR",
-        status: s.status === "active" ? "Active" : "Completed",
-        present: 0,
-        total: 10,
-        sessionCode: s.sessionCode,
-      }));
+        setSessions(formattedSessions);
+      } catch (err) {
+        console.error("SESSION ERROR:", err);
+      }
+    };
 
-      console.log("FORMATTED:", formattedSessions);
-
-      setSessions(formattedSessions);
-    } catch (err) {
-      console.error("SESSION ERROR:", err);
-    }
-  };
-
-  fetchSessions();
-}, []);
+    fetchSessions();
+  }, []);
 
   return (
     <AppShell
       title="Attendance Sessions"
       subtitle="Live and scheduled sessions across departments."
       actions={
-        <button className="btn-primary h-9 px-3 rounded-lg text-sm inline-flex items-center gap-1.5">
-          <Plus className="h-4 w-4" /> Start Session
-        </button>
+        role === "admin" || role === "faculty" ? (
+          <button className="btn-primary h-9 px-3 rounded-lg text-sm inline-flex items-center gap-1.5">
+            <Plus className="h-4 w-4" /> Start Session
+          </button>
+        ) : null
       }
     >
       <TableShell>
@@ -69,7 +67,7 @@ function SessionsPage() {
         </thead>
 
         <tbody>
-          {sessions.map((s) => {
+          {(role === "student" ? sessions.filter((s) => s.status === "Active") : sessions).map((s) => {
             const pct = Math.round((s.present / s.total) * 100) || 0;
 
             return (
@@ -125,10 +123,12 @@ function SessionsPage() {
                 </td>
 
                 <td className="px-5 py-3 text-right">
-                  <button className="h-8 px-3 rounded-lg border border-border text-xs hover:bg-accent/40 inline-flex items-center gap-1.5">
-                    <Play className="h-3 w-3" />
-                    Open
-                  </button>
+                  {(role === "admin" || role === "faculty") && (
+                    <button className="h-8 px-3 rounded-lg border border-border text-xs hover:bg-accent/40 inline-flex items-center gap-1.5">
+                      <Play className="h-3 w-3" />
+                      Open
+                    </button>
+                  )}
                 </td>
               </tr>
             );

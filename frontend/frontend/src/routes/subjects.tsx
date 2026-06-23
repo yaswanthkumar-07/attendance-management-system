@@ -11,6 +11,7 @@ export const Route = createFileRoute("/subjects")({
 
 function SubjectsPage() {
   const [subjects, setSubjects] = useState<any[]>([]);
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -41,9 +42,11 @@ function SubjectsPage() {
       title="Subjects"
       subtitle="Course catalog with credits, faculty and semester mapping."
       actions={
-        <button className="btn-primary h-9 px-3 rounded-lg text-sm inline-flex items-center gap-1.5">
-          <Plus className="h-4 w-4" /> New subject
-        </button>
+        role === "admin" ? (
+          <button className="btn-primary h-9 px-3 rounded-lg text-sm inline-flex items-center gap-1.5">
+            <Plus className="h-4 w-4" /> New subject
+          </button>
+        ) : null
       }
     >
       <TableShell>
@@ -59,7 +62,7 @@ function SubjectsPage() {
         </thead>
 
         <tbody>
-          {subjects.map((s) => (
+          {(role === "student" ? subjects.slice(0, 5) : subjects).map((s) => (
             <tr
               key={s.id}
               className="border-t border-border/60 hover:bg-accent/20"

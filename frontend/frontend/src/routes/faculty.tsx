@@ -11,6 +11,7 @@ export const Route = createFileRoute("/faculty")({
 
 function FacultyPage() {
   const [faculty, setFaculty] = useState<any[]>([]);
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     const fetchFaculty = async () => {
@@ -44,13 +45,15 @@ function FacultyPage() {
       title="Faculty"
       subtitle="Manage instructors, departments and assigned subjects."
       actions={
-        <button className="btn-primary h-9 px-3 rounded-lg text-sm inline-flex items-center gap-1.5">
-          <Plus className="h-4 w-4" /> Add faculty
-        </button>
+        role === "admin" ? (
+          <button className="btn-primary h-9 px-3 rounded-lg text-sm inline-flex items-center gap-1.5">
+            <Plus className="h-4 w-4" /> Add faculty
+          </button>
+        ) : null
       }
     >
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {faculty.map((f) => (
+        {(role === "faculty" ? faculty.slice(0, 1) : faculty).map((f) => (
           <div key={f.id} className="glass-panel rounded-2xl p-5">
             <div className="flex items-start gap-3">
               <img

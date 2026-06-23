@@ -8,7 +8,7 @@ mongoose.connect(process.env.MONGO_URI);
 const faculties = [
 {
 name: "Tanil Reddy",
-email: "[tanil@college.edu](mailto:tanil@college.edu)",
+email: "tanil@college.edu",
 employeeId: "FAC001",
 department: "Computer Science"
 },
