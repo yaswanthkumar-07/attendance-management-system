@@ -11,49 +11,61 @@ export const Route = createFileRoute("/students")({
 
 function StudentsPage() {
   const [q, setQ] = useState("");
-const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
+  const role = localStorage.getItem("role");
 
-useEffect(() => {
-  const fetchStudents = async () => {
-    try {
-      const res = await api.get("/students");
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const res = await api.get("/students");
 
-      const formattedStudents = res.data.students.map((s: any) => ({
-        id: s._id,
-        rollNo: s.rollNumber,
-        name: s.name,
-        email: s.email,
-        department: s.department,
-        year: s.year,
-        section: s.section,
-        attendance: 85,
-        avatar: `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(s.name)}`
-      }));
+        const formattedStudents = res.data.students.map((s: any) => ({
+          id: s._id,
+          rollNo: s.rollNumber,
+          name: s.name,
+          email: s.email,
+          department: s.department,
+          year: s.year,
+          section: s.section,
+          attendance: 85,
+          avatar: `https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(s.name)}`
+        }));
 
-      setStudents(formattedStudents);
-    } catch (error) {
-      console.error("Failed to fetch students", error);
-    }
-  };
+        setStudents(formattedStudents);
+      } catch (error) {
+        console.error("Failed to fetch students", error);
+      }
+    };
 
-  fetchStudents();
-}, []);
+    fetchStudents();
+  }, []);
 
-const rows = students.filter(
+  const rows = students.filter(
     (s) =>
       s.name.toLowerCase().includes(q.toLowerCase()) ||
       s.rollNo.toLowerCase().includes(q.toLowerCase()) ||
       s.department.toLowerCase().includes(q.toLowerCase()),
   );
 
+  const filteredRows =
+    role === "student"
+      ? rows.filter(
+          (s) =>
+            s.email === localStorage.getItem("email") ||
+            s.rollNo === localStorage.getItem("rollNo")
+        )
+      : rows;
+
   return (
     <AppShell
       title="Students"
       subtitle="Manage student profiles, sections and attendance status."
       actions={
-        <button className="btn-primary h-9 px-3 rounded-lg text-sm inline-flex items-center gap-1.5">
-          <Plus className="h-4 w-4" /> Add student
-        </button>
+        role === "admin" ? (
+          <button className="btn-primary h-9 px-3 rounded-lg text-sm inline-flex items-center gap-1.5">
+            <Plus className="h-4 w-4" /> Add student
+          </button>
+        ) : null
       }
     >
       <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
@@ -83,7 +95,7 @@ const rows = students.filter(
           </tr>
         </thead>
         <tbody>
-          {rows.map((s) => (
+          {filteredRows.map((s) => (
             <tr key={s.id} className="border-t border-border/60 hover:bg-accent/20 transition">
               <td className="px-5 py-3">
                 <div className="flex items-center gap-3 min-w-0">
@@ -114,13 +126,15 @@ const rows = students.filter(
                 </div>
               </td>
               <td className="px-5 py-3 text-right">
-                <button className="grid h-8 w-8 place-items-center rounded-lg hover:bg-accent/60 ml-auto">
-                  <MoreHorizontal className="h-4 w-4" />
-                </button>
+                {role === "admin" && (
+                  <button className="grid h-8 w-8 place-items-center rounded-lg hover:bg-accent/60 ml-auto">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                )}
               </td>
             </tr>
           ))}
-          {rows.length === 0 && (
+          {filteredRows.length === 0 && (
             <tr><td colSpan={6} className="px-5 py-10 text-center text-sm text-muted-foreground">No students match your search.</td></tr>
           )}
         </tbody>
