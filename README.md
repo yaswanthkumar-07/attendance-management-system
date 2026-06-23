@@ -181,7 +181,7 @@ JWT_SECRET=your_secret
 
 Frontend:
 
-https://30edd989.attendance-management-system-u4p.pages.dev/
+https://attendance-management-system-u4p.pages.dev/
 
 Backend API:
 
@@ -215,7 +215,7 @@ screenshots/qr-attendance.png
 * Bharath Kumar
 * Jai Ram
 * MD Shahid
-* Siddhabattula Dine
+* Siddhabattula Dinesh
 
 ---
 
