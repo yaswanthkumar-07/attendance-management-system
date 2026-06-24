@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell, Badge, TableShell } from "@/components/app-shell";
+import { AppShell } from "@/components/app-shell";
+import { Badge } from "@/components/ui/badge";      // Update this path if necessary
+import { TableShell } from "@/components/ui/table-shell"; // Update this path if necessary
 import { api } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { Download } from "lucide-react";

@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
-import { AppShell, Badge, TableShell } from "@/components/app-shell";
+import { AppShell } from "@/components/app-shell";
+import { Badge } from "@/components/ui/badge";      // Update this path if necessary
+import { TableShell } from "@/components/ui/table-shell"; // Update this path if necessary
 import { Plus, Search, Filter, MoreHorizontal } from "lucide-react";
 
 export const Route = createFileRoute("/students")({
