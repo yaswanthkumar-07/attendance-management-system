@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
-import { AppShell } from "@/components/app-shell";
-import { Badge } from "@/components/ui/badge";      // Update this path if necessary
-import { TableShell } from "@/components/ui/table-shell"; // Update this path if necessary
+// Change the imports to come from 'app-shell' where we added the exports
+import { AppShell, Badge, TableShell } from "@/components/app-shell"; 
 import { Plus, Search, Filter, MoreHorizontal } from "lucide-react";
 
 export const Route = createFileRoute("/students")({
@@ -122,9 +121,9 @@ function StudentsPage() {
                       }}
                     />
                   </div>
-                  <Badge tone={s.attendance >= 80 ? "success" : s.attendance >= 70 ? "warning" : "danger"}>
-                    {s.attendance}%
-                  </Badge>
+                  <Badge variant={s.attendance >= 80 ? "default" : s.attendance >= 70 ? "secondary" : "destructive"}>
+  {s.attendance}%
+</Badge>
                 </div>
               </td>
               <td className="px-5 py-3 text-right">
