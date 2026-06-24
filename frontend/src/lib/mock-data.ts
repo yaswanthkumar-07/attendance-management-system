@@ -161,10 +161,31 @@ export const weeklyTrend = [
 ];
 
 export const departmentBreakdown = [
-  { name: "CSE", value: 5, color: "var(--color-chart-1)" },
-  { name: "ECE", value: 2, color: "var(--color-chart-2)" },
-  { name: "MECH", value: 2, color: "var(--color-chart-3)" },
-  { name: "CIVIL", value: 1, color: "var(--color-chart-4)" },
+  {
+    name: "Computer Science",
+    value: 6,
+    color: "var(--color-chart-1)",
+  },
+  {
+    name: "Cloud Computing",
+    value: 2,
+    color: "var(--color-chart-2)",
+  },
+  {
+    name: "Mathematics",
+    value: 1,
+    color: "var(--color-chart-3)",
+  },
+  {
+    name: "Chemistry",
+    value: 1,
+    color: "var(--color-chart-4)",
+  },
+  {
+    name: "Data Science",
+    value: 1,
+    color: "var(--color-chart-4)",
+  },
 ];
 
 export const modeDistribution = [
