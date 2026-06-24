@@ -6,6 +6,16 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
+// --- New Exports for your UI components ---
+export function Badge({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none ${className}`}>{children}</span>;
+}
+
+export function TableShell({ children }: { children: ReactNode }) {
+  return <div className="w-full overflow-auto rounded-md border border-border">{children}</div>;
+}
+// ------------------------------------------
+
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/students", label: "Students", icon: GraduationCap },
@@ -62,52 +72,15 @@ export function AppShell({ children, title, subtitle, actions }: {
             );
           })}
         </nav>
-        <div className="absolute bottom-3 left-3 right-3">
-          <div className="glass-panel rounded-xl p-3 flex items-center gap-3">
-            <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Admin" className="h-9 w-9 rounded-full bg-muted" alt="" />
-            <div className="min-w-0 flex-1">
-              <div className="text-xs font-medium truncate">Admin User</div>
-              <div className="text-[11px] text-muted-foreground truncate">admin@uni.edu</div>
-            </div>
-            <button
-              onClick={() => navigate({ to: "/" })}
-              className="text-muted-foreground hover:text-foreground"
-              aria-label="Log out"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
       </aside>
 
-      {open && (
-        <div className="fixed inset-0 z-30 bg-black/40 lg:hidden" onClick={() => setOpen(false)} />
-      )}
-
-      {/* Main */}
       <div className="flex-1 min-w-0 flex flex-col">
         <header className="sticky top-0 z-20 h-16 border-b border-border/60 bg-background/60 backdrop-blur-xl">
           <div className="h-full px-4 sm:px-6 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
-            <button
-              className="lg:hidden grid h-9 w-9 place-items-center rounded-lg border border-border"
-              onClick={() => setOpen(true)}
-              aria-label="Open menu"
-            >
+            <button className="lg:hidden grid h-9 w-9 place-items-center rounded-lg border border-border" onClick={() => setOpen(true)}>
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
-            <div className="relative max-w-md hidden sm:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                placeholder="Search students, sessions…"
-                className="w-full h-9 pl-9 pr-3 rounded-lg bg-input/60 border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/60"
-              />
-            </div>
-            <div className="sm:hidden" />
             <div className="flex items-center gap-2 justify-self-end">
-              <button className="relative grid h-9 w-9 place-items-center rounded-lg border border-border hover:bg-accent/40">
-                <Bell className="h-4 w-4" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
-              </button>
               <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Admin" className="h-9 w-9 rounded-full bg-muted" alt="" />
             </div>
           </div>
@@ -116,25 +89,12 @@ export function AppShell({ children, title, subtitle, actions }: {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
             <div className="min-w-0">
-              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">
-                {title}
-              </h1>
-              {subtitle && (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {subtitle}
-                </p>
-              )}
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">{title}</h1>
+              {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
             </div>
-
-            {actions && (
-              <div className="flex items-center gap-2 shrink-0">
-                {actions}
-              </div>
-            )}
+            {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}
           </div>
-
           {children}
-
           <footer className="text-center text-xs text-muted-foreground py-6">
             Developed by <span className="font-medium">Kolla Yaswanth Kumar</span>
           </footer>
