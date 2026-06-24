@@ -270,7 +270,7 @@ JWT_SECRET=your_secret_key
 
 Frontend:
 
-https://30edd989.attendance-management-system-u4p.pages.dev/
+https://attendance-management-system-u4p.pages.dev/
 
 Backend API:
 
@@ -344,7 +344,7 @@ https://github.com/yaswanthkumar-07/attendance-management-system
 - Bharath Kumar
 - Jai Ram
 - MD Shahid
-- Siddhabattula Dine
+- Siddhabattula Dinesh
 
 ---
 
