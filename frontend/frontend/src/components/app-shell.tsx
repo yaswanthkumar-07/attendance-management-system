@@ -116,61 +116,29 @@ export function AppShell({ children, title, subtitle, actions }: {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
             <div className="min-w-0">
-              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">{title}</h1>
-              {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight truncate">
+                {title}
+              </h1>
+              {subtitle && (
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {subtitle}
+                </p>
+              )}
             </div>
-            {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}
+
+            {actions && (
+              <div className="flex items-center gap-2 shrink-0">
+                {actions}
+              </div>
+            )}
           </div>
+
           {children}
+
+          <footer className="text-center text-xs text-muted-foreground py-6">
+            Developed by <span className="font-medium">Kolla Yaswanth Kumar</span>
+          </footer>
         </main>
-      </div>
-    </div>
-  );
-}
-
-export function StatCard({ label, value, delta, icon: Icon, accent }: {
-  label: string; value: string | number; delta?: string; icon: any; accent?: string;
-}) {
-  return (
-    <div className="glass-panel rounded-2xl p-5 relative overflow-hidden">
-      <div
-        className="absolute -top-10 -right-10 h-32 w-32 rounded-full blur-3xl opacity-50"
-        style={{ background: accent ?? "var(--gradient-primary)" }}
-      />
-      <div className="relative flex items-start justify-between">
-        <div>
-          <div className="text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
-          <div className="mt-2 text-3xl font-semibold">{value}</div>
-          {delta && <div className="mt-1 text-xs text-success">{delta}</div>}
-        </div>
-        <div className="grid h-10 w-10 place-items-center rounded-xl bg-accent/60 border border-glass-border">
-          <Icon className="h-5 w-5 text-primary-glow" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function Badge({ children, tone = "default" }: { children: ReactNode; tone?: "default" | "success" | "warning" | "danger" | "info" }) {
-  const map: Record<string, string> = {
-    default: "bg-muted text-muted-foreground border-border",
-    success: "bg-success/15 text-success border-success/30",
-    warning: "bg-warning/15 text-warning border-warning/30",
-    danger: "bg-destructive/15 text-destructive border-destructive/30",
-    info: "bg-primary/15 text-primary-glow border-primary/30",
-  };
-  return (
-    <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${map[tone]}`}>
-      {children}
-    </span>
-  );
-}
-
-export function TableShell({ children }: { children: ReactNode }) {
-  return (
-    <div className="glass-panel rounded-2xl overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">{children}</table>
       </div>
     </div>
   );

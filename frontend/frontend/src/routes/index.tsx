@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Sparkles, Mail, Lock, ArrowRight, ShieldCheck, ScanFace, QrCode } from "lucide-react";
-import { setRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,24 +17,24 @@ function Login() {
   const [email, setEmail] = useState("admin@uni.edu");
   const [password, setPassword] = useState("demo1234");
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("admin");
+  const [selectedRole, setSelectedRole] = useState("admin");
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    localStorage.setItem("role", role);
 
-if (role === "admin") {
-  navigate({ to: "/dashboard" });
-}
+    localStorage.setItem("role", selectedRole);
 
-if (role === "faculty") {
-  navigate({ to: "/attendance" });
-}
+    if (selectedRole === "admin") {
+      navigate({ to: "/dashboard" });
+    }
 
-if (role === "student") {
-  navigate({ to: "/reports" });
-}
+    if (selectedRole === "faculty") {
+      navigate({ to: "/attendance" });
+    }
+
+    if (selectedRole === "student") {
+      navigate({ to: "/reports" });
+    }
   };
 
   return (
@@ -88,15 +87,17 @@ if (role === "student") {
                 />
               </div>
             </div>
-<select
-  value={role}
-  onChange={(e) => setRole(e.target.value)}
-  className="w-full h-11 rounded-lg border border-border bg-input/60 px-3 text-sm"
->
-  <option value="admin">Admin</option>
-  <option value="faculty">Faculty</option>
-  <option value="student">Student</option>
-</select>
+
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="w-full h-11 rounded-lg border border-border bg-input/60 px-3 text-sm"
+            >
+              <option value="admin">Admin</option>
+              <option value="faculty">Faculty</option>
+              <option value="student">Student</option>
+            </select>
+
             <button
               type="submit"
               disabled={loading}
